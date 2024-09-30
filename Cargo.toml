@@ -1,0 +1,9 @@
+[package]
+name = "rusty_arkanoid"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+colored = "2.0"
+ggez = "0.9.3"
+rand = "0.8"
