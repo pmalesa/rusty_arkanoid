@@ -3,6 +3,7 @@ mod player;
 mod enemy;
 mod block;
 mod ball;
+mod collision;
 
 use colored::Colorize;
 

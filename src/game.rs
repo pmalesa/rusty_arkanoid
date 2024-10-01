@@ -1,9 +1,10 @@
 use crate::player::Player;
 use crate::block::Block;
 use crate::ball::Ball;
+use crate::collision::{ball_block_collision, reflect_velocity_block};
 
 use ggez::event::EventHandler;
-use ggez::graphics::{ Canvas, Color, DrawMode, DrawParam, Mesh, Rect };
+use ggez::graphics::{ Canvas, Color };
 use ggez::{ Context, GameResult };
 
 pub struct GameState {
@@ -49,6 +50,17 @@ impl EventHandler for GameState {
         for block in &mut self.blocks {
             block.update(ctx);
         }
+
+        // Handle collisions between the ball and the player
+        // ...
+
+        // Handle collisions between the ball and the blocks
+        for block in self.blocks.iter() {
+            if ball_block_collision(&self.ball, &block) {
+                reflect_velocity_block(&mut self.ball, &block);
+            }
+        }
+
         Ok(())
     }
 

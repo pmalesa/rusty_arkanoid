@@ -1,4 +1,4 @@
-use ggez::graphics::{ self, Color, DrawParam, Mesh, DrawMode, Rect };
+use ggez::graphics::{ self, Color, DrawParam, Mesh, DrawMode };
 use ggez::{ Context, GameResult };
 
 pub struct Ball {
