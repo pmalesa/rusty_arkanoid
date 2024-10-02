@@ -1,7 +1,12 @@
 use crate::player::Player;
 use crate::block::Block;
 use crate::ball::Ball;
-use crate::collision::{ball_block_collision, reflect_velocity_block};
+use crate::collision::{
+    collision_ball_block,
+    reflect_velocity_block_to_ball,
+    collision_ball_player,
+    reflect_velocity_player_to_ball,
+};
 
 use ggez::event::EventHandler;
 use ggez::graphics::{ Canvas, Color };
@@ -52,12 +57,14 @@ impl EventHandler for GameState {
         }
 
         // Handle collisions between the ball and the player
-        // ...
+        if collision_ball_player(&self.ball, &self.player) {
+            reflect_velocity_player_to_ball(&mut self.ball, &self.player);
+        }
 
         // Handle collisions between the ball and the blocks
         for block in self.blocks.iter() {
-            if ball_block_collision(&self.ball, &block) {
-                reflect_velocity_block(&mut self.ball, &block);
+            if collision_ball_block(&self.ball, &block) {
+                reflect_velocity_block_to_ball(&mut self.ball, &block);
             }
         }
 

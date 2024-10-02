@@ -11,6 +11,9 @@ pub struct Ball {
 
 impl Ball {
     pub const DEFAULT_BALL_RADIUS: f32 = 10.0;
+    pub const MIN_BALL_SPEED: f32 = 2.0;
+    pub const DEFAULT_BALL_SPEED: f32 = 5.0;
+    pub const MAX_BALL_SPEED: f32 = 10.0;
 
     pub fn new(ctx: &mut Context) -> GameResult<Self> {
         let circle = Mesh::new_circle(
@@ -26,7 +29,7 @@ impl Ball {
 
         Ok(Ball {
             position: [window_size.0 / 2.0 - Ball::DEFAULT_BALL_RADIUS, window_size.1 / 2.0 - Ball::DEFAULT_BALL_RADIUS],
-            velocity: [0.0, 2.0],
+            velocity: [0.0, Ball::DEFAULT_BALL_SPEED],
             radius: Ball::DEFAULT_BALL_RADIUS,
             color: Color::WHITE,
             circle,
