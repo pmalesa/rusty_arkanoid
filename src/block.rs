@@ -5,6 +5,7 @@ use rand::Rng;
 pub struct Block {
     pub position: [f32; 2],
     pub color: Color,
+    pub active: bool,
     rectangle: Mesh,
 
     time_since_last_change: f32,
@@ -12,7 +13,7 @@ pub struct Block {
 }
 
 impl Block {
-    pub const BLOCK_SIZE: f32 = 25.0;
+    pub const BLOCK_SIZE: f32 = 40.0;
 
     pub fn new(ctx: &mut Context, position: [f32; 2]) -> GameResult<Self> {
         let color = Self::generate_color();
@@ -29,6 +30,7 @@ impl Block {
         Ok(Block {
             position: position,
             color: color,
+            active: true,
             rectangle,
 
             time_since_last_change: 0.0,
@@ -37,6 +39,10 @@ impl Block {
     }
 
     pub fn update(&mut self, ctx: &mut Context) {
+        if !self.active {
+            return;
+        }
+
         let delta_time = ctx.time.delta().as_secs_f32();
         self.time_since_last_change += delta_time;
 
@@ -50,6 +56,10 @@ impl Block {
     }
 
     pub fn draw(&self, canvas: &mut graphics::Canvas) {
+        if !self.active {
+            return;
+        }
+
         let params = DrawParam::default()
             .dest(self.position)
             .color(self.color);

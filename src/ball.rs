@@ -11,9 +11,9 @@ pub struct Ball {
 
 impl Ball {
     pub const DEFAULT_BALL_RADIUS: f32 = 10.0;
-    pub const MIN_BALL_SPEED: f32 = 2.0;
-    pub const DEFAULT_BALL_SPEED: f32 = 5.0;
+    pub const DEFAULT_BALL_SPEED: f32 = 7.0;
     pub const MAX_BALL_SPEED: f32 = 10.0;
+    pub const WALL_COLLISION_MARGIN: f32 = 5.0;
 
     pub fn new(ctx: &mut Context) -> GameResult<Self> {
         let circle = Mesh::new_circle(
@@ -41,11 +41,11 @@ impl Ball {
         self.position[1] += self.velocity[1];
     
         let window_size = ctx.gfx.drawable_size();
-        if self.position[0] - self.radius <= 0.0 || self.position[0] + self.radius >= window_size.0 {
+        if self.position[0] - self.radius <= Ball::WALL_COLLISION_MARGIN || self.position[0] + self.radius + Ball::WALL_COLLISION_MARGIN >= window_size.0 {
             self.velocity[0] = -self.velocity[0];
         }
 
-        if self.position[1] - self.radius <= 0.0 || self.position[1] + self.radius >= window_size.1 {
+        if self.position[1] - self.radius <= Ball::WALL_COLLISION_MARGIN || self.position[1] + self.radius + Ball::WALL_COLLISION_MARGIN >= window_size.1 {
             self.velocity[1] = -self.velocity[1];
         }
     }

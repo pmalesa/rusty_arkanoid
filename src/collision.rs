@@ -4,6 +4,8 @@ use crate::ball::Ball;
 use crate::block::Block;
 use crate::player::Player;
 
+pub const COLLISION_MARGIN: f32 = 10.0;
+
 pub fn collision_ball_block(ball: &Ball, block: &Block) -> bool {
     let closest_point = closest_point(ball, block.position, [Block::BLOCK_SIZE, Block::BLOCK_SIZE]);
 
@@ -13,7 +15,7 @@ pub fn collision_ball_block(ball: &Ball, block: &Block) -> bool {
 
     let distance_squared = distance_x.powi(2) + distance_y.powi(2);
 
-    distance_squared <= ball.radius.powi(2)
+    distance_squared + COLLISION_MARGIN <= ball.radius.powi(2)
 }
 
 pub fn reflect_velocity_block_to_ball(ball: &mut Ball, block: &Block) {
@@ -59,7 +61,7 @@ pub fn collision_ball_player(ball: &Ball, player: &Player) -> bool {
 
     let distance_squared = distance_x.powi(2) + distance_y.powi(2);
 
-    distance_squared <= ball.radius.powi(2)
+    distance_squared + COLLISION_MARGIN <= ball.radius.powi(2)
 }
 
 pub fn reflect_velocity_player_to_ball(ball: &mut Ball, player: &Player) {
@@ -98,7 +100,7 @@ pub fn reflect_velocity_player_to_ball(ball: &mut Ball, player: &Player) {
 
     clamp_ball_velocity(ball);
 
-    // Position correction to prevent the ball from sticking to the player
+    // // Position correction to prevent the ball from sticking to the player
     let penetration_depth = (ball.radius - length).max(0.0);
     if penetration_depth > 0.0 {
         let correction_factor = 1.0;
@@ -119,8 +121,8 @@ pub fn clamp(value: f32, min: f32, max: f32) -> f32 {
 
 pub fn clamp_ball_velocity(ball: &mut Ball) {
     let speed = (ball.velocity[0].powi(2) + ball.velocity[1].powi(2)).sqrt();
-    if speed < Ball::MIN_BALL_SPEED {
-        let factor = Ball::MIN_BALL_SPEED / speed;
+    if speed < Ball::DEFAULT_BALL_SPEED {
+        let factor = Ball::DEFAULT_BALL_SPEED / speed;
         ball.velocity[0] *= factor;
         ball.velocity[1] *= factor;
     } else if speed > Ball::MAX_BALL_SPEED {

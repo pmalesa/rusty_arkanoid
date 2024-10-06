@@ -11,7 +11,7 @@ pub struct Player {
 }
 
 impl Player {
-    pub const DEFAULT_SPEED: f32 = 7.0;
+    pub const DEFAULT_SPEED: f32 = 6.0;
     pub const DEFAULT_HEIGHT: f32 = 25.0;
     pub const DEFAULT_WIDTH: f32 = 100.0;
 

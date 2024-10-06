@@ -22,7 +22,7 @@ impl GameState {
     pub fn new(ctx: &mut Context) -> GameResult<Self> {
         let player = Player::new(ctx)?;
         let rows = 8;
-        let cols = 40;
+        let cols = 25;
         let blocks = GameState::generate_blocks(rows, cols, ctx)?;
         let ball = Ball::new(ctx)?;
 
@@ -62,9 +62,14 @@ impl EventHandler for GameState {
         }
 
         // Handle collisions between the ball and the blocks
-        for block in self.blocks.iter() {
+        for block in self.blocks.iter_mut() {
+            if !block.active {
+                continue;
+            }
+
             if collision_ball_block(&self.ball, &block) {
                 reflect_velocity_block_to_ball(&mut self.ball, &block);
+                block.active = false;
             }
         }
 
