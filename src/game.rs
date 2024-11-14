@@ -24,7 +24,7 @@ impl GameState {
         let rows = 8;
         let cols = 25;
         let blocks = GameState::generate_blocks(rows, cols, ctx)?;
-        let ball = Ball::new(ctx)?;
+        let ball = Ball::new(ctx, ctx.gfx.drawable_size())?;
 
         Ok(GameState { player, blocks, ball })
     }

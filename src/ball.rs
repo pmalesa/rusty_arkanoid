@@ -1,5 +1,7 @@
 use ggez::graphics::{ self, Color, DrawParam, Mesh, DrawMode };
 use ggez::{ Context, GameResult };
+use rand::Rng;
+
 
 pub struct Ball {
     pub position: [f32; 2],
@@ -7,6 +9,11 @@ pub struct Ball {
     pub radius: f32,
     pub color: Color,
     circle: Mesh,
+    window_size: (f32, f32),
+    respawn_time: f32,
+
+    pub active: bool,
+    pub respawn_timer: f32,
 }
 
 impl Ball {
@@ -15,7 +22,7 @@ impl Ball {
     pub const MAX_BALL_SPEED: f32 = 10.0;
     pub const WALL_COLLISION_MARGIN: f32 = 5.0;
 
-    pub fn new(ctx: &mut Context) -> GameResult<Self> {
+    pub fn new(ctx: &mut Context, window_size: (f32, f32)) -> GameResult<Self> {
         let circle = Mesh::new_circle(
             ctx,
             DrawMode::fill(),
@@ -25,29 +32,44 @@ impl Ball {
             Color::WHITE,
         )?;
 
-        let window_size = ctx.gfx.drawable_size();
-
         Ok(Ball {
             position: [window_size.0 / 2.0 - Ball::DEFAULT_BALL_RADIUS, window_size.1 / 2.0 - Ball::DEFAULT_BALL_RADIUS],
             velocity: [0.0, Ball::DEFAULT_BALL_SPEED],
             radius: Ball::DEFAULT_BALL_RADIUS,
             color: Color::WHITE,
             circle,
+            window_size,
+            respawn_time: 3.0,
+            active: true,
+            respawn_timer: 0.0,
         })
     }
 
     pub fn update(&mut self, ctx: &mut Context) {
-        self.position[0] += self.velocity[0];
-        self.position[1] += self.velocity[1];
+        if self.active {
+            self.position[0] += self.velocity[0];
+            self.position[1] += self.velocity[1];
+        
+            let window_size = ctx.gfx.drawable_size();
+            if self.position[0] - self.radius <= Ball::WALL_COLLISION_MARGIN || self.position[0] + self.radius + Ball::WALL_COLLISION_MARGIN >= window_size.0 {
+                self.velocity[0] = -self.velocity[0];
+            }
     
-        let window_size = ctx.gfx.drawable_size();
-        if self.position[0] - self.radius <= Ball::WALL_COLLISION_MARGIN || self.position[0] + self.radius + Ball::WALL_COLLISION_MARGIN >= window_size.0 {
-            self.velocity[0] = -self.velocity[0];
+            if self.position[1] - self.radius <= Ball::WALL_COLLISION_MARGIN || self.position[1] + self.radius + Ball::WALL_COLLISION_MARGIN >= window_size.1 {
+                self.velocity[1] = -self.velocity[1];
+            }
+
+            if self.is_outside_window() {
+                self.despawn();
+            }
+        } else {
+            let delta_time = ctx.time.delta().as_secs_f32();
+            self.respawn_timer -= delta_time;
+            if self.respawn_timer <= 0.0 {
+                self.respawn();
+            }
         }
 
-        if self.position[1] - self.radius <= Ball::WALL_COLLISION_MARGIN || self.position[1] + self.radius + Ball::WALL_COLLISION_MARGIN >= window_size.1 {
-            self.velocity[1] = -self.velocity[1];
-        }
     }
 
     pub fn draw(&self, canvas: &mut graphics::Canvas) {
@@ -56,5 +78,33 @@ impl Ball {
             .color(self.color);
 
         canvas.draw(&self.circle, params);
+    }
+
+    fn is_outside_window(&self) -> bool {
+        if self.position[0] < 0.0 || self.position[0] > self.window_size.0 || 
+           self.position[1] < 0.0 || self.position[1] > self.window_size.1 {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    fn reset_position(&mut self) {
+        self.position = [self.window_size.0 / 2.0 - Ball::DEFAULT_BALL_RADIUS, self.window_size.1 / 2.0 - Ball::DEFAULT_BALL_RADIUS];
+    }
+
+    fn reset_velocity(&mut self) {
+        self.velocity = [0.0, Ball::DEFAULT_BALL_SPEED]
+    }
+
+    fn despawn(&mut self) {
+        self.active = false;
+        self.respawn_timer = self.respawn_time;
+    }
+
+    fn respawn(&mut self) {
+        self.reset_position();
+        self.reset_velocity();
+        self.active = true;
     }
 }
