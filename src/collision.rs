@@ -5,8 +5,13 @@ use crate::block::Block;
 use crate::player::Player;
 
 pub const COLLISION_MARGIN: f32 = 10.0;
+pub const COLLISION_COOLDOWN_TIME: f32 = 0.05;
 
 pub fn collision_ball_block(ball: &Ball, block: &Block) -> bool {
+    if !ball.active {
+        return false;
+    }
+
     let closest_point = closest_point(ball, block.position, [Block::BLOCK_SIZE, Block::BLOCK_SIZE]);
 
     // Calculate the distance between the ball's center and this closest point
@@ -19,6 +24,15 @@ pub fn collision_ball_block(ball: &Ball, block: &Block) -> bool {
 }
 
 pub fn reflect_velocity_block_to_ball(ball: &mut Ball, block: &Block) {
+    if !ball.active || !block.active {
+        return;
+    }
+
+    if ball.collision_cooldown > 0.0 {
+        return;        
+    }
+    ball.collision_cooldown = COLLISION_COOLDOWN_TIME;
+
     let closest_point = closest_point(ball, block.position, [Block::BLOCK_SIZE, Block::BLOCK_SIZE]);
 
     // Calculate the vector from the closest point to the ball's center
@@ -53,6 +67,10 @@ pub fn reflect_velocity_block_to_ball(ball: &mut Ball, block: &Block) {
 }
 
 pub fn collision_ball_player(ball: &Ball, player: &Player) -> bool {
+    if !ball.active {
+        return false;
+    }
+
     let closest_point: (f32, f32) = closest_point(ball, player.position, player.size);
 
     // Calculate the distance between the ball's center and this closest point
@@ -65,6 +83,15 @@ pub fn collision_ball_player(ball: &Ball, player: &Player) -> bool {
 }
 
 pub fn reflect_velocity_player_to_ball(ball: &mut Ball, player: &Player) {
+    if !ball.active {
+        return;
+    }
+
+    if ball.collision_cooldown > 0.0 {
+        return;        
+    }
+    ball.collision_cooldown = COLLISION_COOLDOWN_TIME;
+
     let closest_point: (f32, f32) = closest_point(ball, player.position, player.size);
 
     // Calculate the vector from the closest point to the ball's center
