@@ -6,4 +6,5 @@ edition = "2021"
 [dependencies]
 colored = "2.0"
 ggez = "0.9.3"
+rodio = "0.20.1"
 rand = "0.8"

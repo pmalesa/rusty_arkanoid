@@ -1,0 +1,10 @@
+Questions to ChatGPT:
+-
+
+
+
+Do ogarnięcia:
+- Dodaj może collision cooldown piłki z playerem
+- Może zaimplementuj Continuous Collision Detection (CCD)
+- Uderzenia bokiem kulki przez playera źle działają
+- przenieś metode clamp_ball_velocity do Ball.rs

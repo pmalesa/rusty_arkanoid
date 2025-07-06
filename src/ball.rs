@@ -1,7 +1,7 @@
 use ggez::graphics::{ self, Color, DrawParam, Mesh, DrawMode };
 use ggez::{ Context, GameResult };
-use rand::Rng;
-
+use ggez::audio::{SoundSource, Source};
+use std::path::PathBuf;
 
 pub struct Ball {
     pub position: [f32; 2],
@@ -15,6 +15,9 @@ pub struct Ball {
     circle: Mesh,
     window_size: (f32, f32),
     respawn_time: f32,
+
+    pub player_collision_sound: ggez::audio::Source,
+    pub block_collision_sound: ggez::audio::Source,
 }
 
 impl Ball {
@@ -33,6 +36,13 @@ impl Ball {
             Color::WHITE,
         )?;
 
+        // TODO - something wrong with the paths
+        let player_collision_sound_path = PathBuf::from("sounds/player_ball_hit.wav");
+        let player_collision_sound = ggez::audio::Source::new(ctx, player_collision_sound_path)?;
+
+        let block_collision_sound_path = PathBuf::from("sounds/ball_block_hit.wav");
+        let block_collision_sound = ggez::audio::Source::new(ctx, block_collision_sound_path)?;
+
         Ok(Ball {
             position: [window_size.0 / 2.0 - Ball::DEFAULT_BALL_RADIUS, window_size.1 / 2.0 - Ball::DEFAULT_BALL_RADIUS],
             velocity: [0.0, Ball::DEFAULT_BALL_SPEED],
@@ -43,7 +53,9 @@ impl Ball {
             respawn_time: 3.0,
             active: true,
             respawn_timer: 0.0,
-            collision_cooldown: 0.0
+            collision_cooldown: 0.0,
+            player_collision_sound,
+            block_collision_sound,
         })
     }
 

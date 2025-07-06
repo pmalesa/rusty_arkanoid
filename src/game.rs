@@ -8,6 +8,7 @@ use crate::collision::{
     reflect_velocity_player_to_ball,
 };
 
+use ggez::audio::SoundSource;
 use ggez::event::EventHandler;
 use ggez::graphics::{ Canvas, Color };
 use ggez::{ Context, GameResult };
@@ -58,6 +59,7 @@ impl EventHandler for GameState {
 
         // Handle collisions between the ball and the player
         if collision_ball_player(&self.ball, &self.player) {
+            self.ball.player_collision_sound.play_detached(ctx)?;
             reflect_velocity_player_to_ball(&mut self.ball, &self.player);
         }
 
@@ -68,6 +70,7 @@ impl EventHandler for GameState {
             }
 
             if collision_ball_block(&self.ball, &block) {
+                self.ball.block_collision_sound.play_detached(ctx)?;
                 reflect_velocity_block_to_ball(&mut self.ball, &block);
                 block.active = false;
             }

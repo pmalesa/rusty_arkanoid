@@ -789,7 +789,7 @@ dependencies = [
  "mint",
  "ordered-float 3.9.2",
  "pollster",
- "rodio",
+ "rodio 0.17.3",
  "serde",
  "skeptic",
  "smart-default",
@@ -2013,6 +2013,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "rodio"
+version = "0.20.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e7ceb6607dd738c99bc8cb28eff249b7cd5c8ec88b9db96c0608c1480d140fb1"
+dependencies = [
+ "claxon",
+ "cpal",
+ "hound",
+ "lewton",
+ "symphonia",
+]
+
+[[package]]
 name = "rustc-demangle"
 version = "0.1.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2050,6 +2063,7 @@ dependencies = [
  "colored",
  "ggez",
  "rand",
+ "rodio 0.20.1",
 ]
 
 [[package]]

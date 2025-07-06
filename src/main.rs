@@ -17,6 +17,7 @@ fn main() -> GameResult {
     let (mut ctx, event_loop) = ggez::ContextBuilder::new("rusty_arkanoid", "Piotrek")
         .window_setup(ggez::conf::WindowSetup::default().title("Rusty Arkanoid"))
         .window_mode(ggez::conf::WindowMode::default().dimensions(1200.0, 900.0))
+        .add_resource_path("assets")
         .build()
         .expect("Could not create ggez context!");
 
